@@ -10,6 +10,6 @@ sentence-transformers
 pypdf
 python-dotenv
 
-pinecone-client[grpc]
+pinecone
 
 -e .
