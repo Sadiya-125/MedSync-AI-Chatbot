@@ -341,14 +341,6 @@ if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare In
             message_placeholder.error(error_message)
             st.session_state.messages.append({"role": "assistant", "content": error_message})
 
-# Clear chat button
-if st.session_state.messages:
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col2:
-        if st.button("Clear Conversation", type="secondary"):
-            st.session_state.messages = []
-            st.rerun()
-
 # Sidebar
 with st.sidebar:
     st.markdown('<div class="sidebar-header">MedSync AI</div>', unsafe_allow_html=True)
