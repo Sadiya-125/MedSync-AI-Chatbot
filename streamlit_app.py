@@ -120,45 +120,52 @@ st.markdown("""
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     
-    .chat-container {
-        background: white;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e5e7eb;
-        margin-bottom: 2rem;
-    }
-    
     .stChatMessage {
         background: transparent !important;
-        padding: 0 !important;
+        padding: 0.5rem 0 !important;
         margin: 0 !important;
+        border: none !important;
     }
     
     .stChatMessage[data-testid="chatMessage"] {
         background: transparent !important;
+        padding: 0.5rem 0 !important;
+        margin: 0 !important;
+    }
+    
+    .stChatMessage .stChatMessageContent {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
     }
     
     .user-message {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
         padding: 1rem 1.5rem;
-        border-radius: 12px;
+        border-radius: 18px 18px 4px 18px;
         margin: 0.5rem 0;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         font-family: 'Inter', sans-serif;
         font-weight: 500;
+        max-width: 70%;
+        margin-left: auto;
+        display: inline-block;
     }
     
     .assistant-message {
         background: #f9fafb;
         border: 1px solid #e5e7eb;
         padding: 1rem 1.5rem;
-        border-radius: 12px;
+        border-radius: 18px 18px 18px 4px;
         margin: 0.5rem 0;
         font-family: 'Inter', sans-serif;
         color: #374151;
         line-height: 1.6;
+        max-width: 70%;
+        margin-right: auto;
+        display: inline-block;
     }
     
     .stChatInput {
@@ -168,6 +175,7 @@ st.markdown("""
         padding: 0.75rem 1rem;
         font-family: 'Inter', sans-serif;
         font-size: 1rem;
+        margin-top: 1rem;
     }
     
     .stChatInput:focus {
@@ -269,6 +277,18 @@ st.markdown("""
         color: #6b7280;
         margin-top: 0.25rem;
     }
+    
+    .chat-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 2rem;
+        min-height: 500px;
+        max-height: 700px;
+        overflow-y: auto;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -281,49 +301,45 @@ with col2:
     st.markdown('<h1 class="main-header">MedSync AI</h1>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Intelligent Healthcare Assistant</p>', unsafe_allow_html=True)
 
-# Main Chat Container
-with st.container():    
-    # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        if message["role"] == "user":
+            st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
+
+# Chat input
+if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare Information..."):
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # Display chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            if message["role"] == "user":
-                st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
-            else:
-                st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
     
-    # Chat input
-    if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare Information..."):
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt})
+    # Display assistant response
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
         
-        # Display user message
-        with st.chat_message("user"):
-            st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
-        
-        # Display assistant response
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
+        try:
+            with st.spinner("Processing Your Request..."):
+                response = rag_chain.invoke({"input": prompt})
+                answer = response["answer"]
             
-            try:
-                with st.spinner("Processing Your Request..."):
-                    response = rag_chain.invoke({"input": prompt})
-                    answer = response["answer"]
-                
-                message_placeholder.markdown(f'<div class="assistant-message">{answer}</div>', unsafe_allow_html=True)
-                
-                # Add assistant response to chat history
-                st.session_state.messages.append({"role": "assistant", "content": answer})
-                
-            except Exception as e:
-                error_message = f"Sorry, I encountered an error: {str(e)}"
-                message_placeholder.error(error_message)
-                st.session_state.messages.append({"role": "assistant", "content": error_message})
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+            message_placeholder.markdown(f'<div class="assistant-message">{answer}</div>', unsafe_allow_html=True)
+            
+            # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+            
+        except Exception as e:
+            error_message = f"Sorry, I encountered an error: {str(e)}"
+            message_placeholder.error(error_message)
+            st.session_state.messages.append({"role": "assistant", "content": error_message})
 
 # Clear chat button
 if st.session_state.messages:
