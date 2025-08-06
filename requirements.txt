@@ -3,6 +3,7 @@ langchain-community
 langchain-openai
 langchain-pinecone
 langchain-experimental
+langchain-google-genai
 
 streamlit
 sentence-transformers
