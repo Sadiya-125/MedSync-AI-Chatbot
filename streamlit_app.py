@@ -372,10 +372,3 @@ with st.sidebar:
         </ul>
     </div>
     """, unsafe_allow_html=True)
-
-# Footer
-st.markdown("""
-<div class="footer">
-    <p>© 2025 MedSync AI | Healthcare Intelligence Platform</p>
-</div>
-""", unsafe_allow_html=True) 
