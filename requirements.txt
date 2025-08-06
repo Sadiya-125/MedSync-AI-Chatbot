@@ -1,13 +1,13 @@
-langchain==0.1.16
-langchain-community==0.0.30
-langchain-openai==0.1.6
-langchain-pinecone==0.0.6
-langchain-experimental==0.0.49
+langchain
+langchain-community
+langchain-openai
+langchain-pinecone
+langchain-experimental
 
-streamlit==1.32.0
-sentence-transformers==2.2.2
-pypdf==3.17.4
-python-dotenv==1.0.1
+streamlit
+sentence-transformers
+pypdf
+python-dotenv
 
 pinecone-client[grpc]
 
