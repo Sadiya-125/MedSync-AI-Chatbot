@@ -11,10 +11,8 @@ from src.prompt import *
 from flask_cors import CORS
 import os
 
-
 app = Flask(__name__)
 CORS(app)
-
 
 load_dotenv()
 
@@ -24,7 +22,6 @@ GEMINI_API_KEY=os.environ.get('GEMINI_API_KEY')
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 
-
 embeddings = download_hugging_face_embeddings()
 
 index_name = "medical-chatbot" 
@@ -33,9 +30,6 @@ docsearch = PineconeVectorStore.from_existing_index(
     index_name=index_name,
     embedding=embeddings
 )
-
-
-
 
 retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
@@ -50,13 +44,9 @@ prompt = ChatPromptTemplate.from_messages(
 question_answer_chain = create_stuff_documents_chain(chatModel, prompt)
 rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
-
-
 @app.route("/")
 def index():
     return render_template('chat.html')
-
-
 
 @app.route("/get", methods=["GET", "POST"])
 def chat():
@@ -66,7 +56,6 @@ def chat():
     response = rag_chain.invoke({"input": msg})
     print("Response : ", response["answer"])
     return str(response["answer"])
-
 
 @app.route("/test", methods=["GET", "POST"])
 def test():
@@ -87,7 +76,6 @@ def test():
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": "Internal Server Error", "Details": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port= 8080, debug= True)
