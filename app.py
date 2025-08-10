@@ -66,6 +66,26 @@ def chat():
     return str(response["answer"])
 
 
+@app.route("/test", methods=["GET", "POST"])
+def test():
+    try:
+        data = request.get_json()
+        msg = data.get("msg")
+        if not msg:
+            return jsonify({"error": "Message is Required"}), 400
+
+        print("Patient Input:", msg)
+
+        response = rag_chain.invoke({"input": msg})
+        assistant_response = response.get("answer", "No Answer Generated.")
+        print("RAG Response:", assistant_response)
+
+        return jsonify({"answer": assistant_response}), 200
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": "Internal Server Error", "Details": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port= 8080, debug= True)
