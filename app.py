@@ -8,10 +8,12 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from src.prompt import *
+from flask_cors import CORS
 import os
 
 
 app = Flask(__name__)
+CORS(app)
 
 
 load_dotenv()
