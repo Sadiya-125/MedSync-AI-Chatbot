@@ -10,7 +10,7 @@ from src.prompt import *
 import os
 import base64
 
-# Load environment variables
+# Load Environment Variables
 load_dotenv()
 
 PINECONE_API_KEY = os.environ.get('PINECONE_API_KEY')
@@ -19,7 +19,7 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
 os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 
-# Initialize embeddings and vector store
+# Initialize Embeddings and Vector Store
 @st.cache_resource
 def initialize_chatbot():
     """Initialize the chatbot components with caching for performance"""
@@ -48,14 +48,14 @@ def initialize_chatbot():
     
     return rag_chain
 
-# Initialize the chatbot
+# Initialize the Chatbot
 try:
     rag_chain = initialize_chatbot()
 except Exception as e:
     st.error(f"Error initializing chatbot: {str(e)}")
     st.stop()
 
-# Function to get base64 encoded logo
+# Function to Get base64 Encoded Logo
 @st.cache_data
 def get_logo_base64():
     """Get base64 encoded logo for display"""
@@ -292,7 +292,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Header with Logo
+# Header With Logo
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     logo_base64 = get_logo_base64()
@@ -301,11 +301,11 @@ with col2:
     st.markdown('<h1 class="main-header">MedSync AI</h1>', unsafe_allow_html=True)
     st.markdown('<p class="subtitle">Intelligent Healthcare Assistant</p>', unsafe_allow_html=True)
 
-# Initialize chat history
+# Initialize Chat History
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
+# Display Chat History
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         if message["role"] == "user":
@@ -313,16 +313,16 @@ for message in st.session_state.messages:
         else:
             st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
 
-# Chat input
+# Chat Input
 if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare Information..."):
-    # Add user message to chat history
+    # Add User Message to Chat History
     st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # Display user message
+    # Display User Message
     with st.chat_message("user"):
         st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
     
-    # Display assistant response
+    # Display Assistant Response
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         
@@ -333,7 +333,7 @@ if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare In
             
             message_placeholder.markdown(f'<div class="assistant-message">{answer}</div>', unsafe_allow_html=True)
             
-            # Add assistant response to chat history
+            # Add Assistant Response to Chat History
             st.session_state.messages.append({"role": "assistant", "content": answer})
             
         except Exception as e:
@@ -341,7 +341,7 @@ if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare In
             message_placeholder.error(error_message)
             st.session_state.messages.append({"role": "assistant", "content": error_message})
 
-# Sidebar
+# Side Bar
 with st.sidebar:
     st.markdown('<div class="sidebar-header">MedSync AI</div>', unsafe_allow_html=True)
     
