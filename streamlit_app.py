@@ -332,8 +332,6 @@ if prompt := st.chat_input("Ask about Medical Topics, Symptoms, or Healthcare In
                 answer = response["answer"]
             
             message_placeholder.markdown(f'<div class="assistant-message">{answer}</div>', unsafe_allow_html=True)
-            
-            # Add Assistant Response to Chat History
             st.session_state.messages.append({"role": "assistant", "content": answer})
             
         except Exception as e:
@@ -362,9 +360,9 @@ with st.sidebar:
     <div class="feature-list">
         <strong>How to Use:</strong>
         <ol>
-            <li>Type your Medical Question</li>
+            <li>Type Your Medical Question</li>
             <li>Press Enter or Click Send</li>
-            <li>Receive instant Medical Information</li>
+            <li>Receive Instant Medical Information</li>
             <li>Ask Follow-up Questions as Needed</li>
         </ol>
     </div>
