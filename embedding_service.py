@@ -15,6 +15,6 @@ class EmbedResponse(BaseModel):
 @app.post("/embed", response_model=EmbedResponse)
 async def embed(req: EmbedRequest):
     if not req.text:
-        raise HTTPException(status_code=400, detail="text is required")
+        raise HTTPException(status_code=400, detail="Text is Required")
     vec = model.encode(req.text)
     return {"embedding": vec.tolist() if hasattr(vec, "tolist") else list(vec)}
